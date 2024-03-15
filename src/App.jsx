@@ -7,10 +7,13 @@ import viteLogo from '/vite.svg'
 import './App.css'
 
 
-const img = matrix([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+
 
 function App() {
-  const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+  //const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+  // const img = matrix([[0,0,0,0,0], [0,1, 2, 3,0], [0,4, 5, 6,0], [0,7, 8, 9,0],[0,0,0,0,0]])
+  // console.log(convolve(img, IDENTITY, 5, 5));
+
   const canvasRef = useRef(null)
   useEffect(() => {
     const img = new Image()
@@ -23,15 +26,14 @@ function App() {
   }, [])
 
   function convolve(mat, filter, width, height) {
-    const newMatrix = zeros(height, width)
+    const newMatrix = zeros(mat._size[0]-2, mat._size[1]-2)
     for (var i = 1; i < height-1; i++) {
-      for (var j = 1; i < width-1; i++) {
+      for (var j = 1; j < width-1; j++) {
         var sum = 0
         var window = subset(mat, index(range(i-1, i+2), range(j-1, j+2)))
-        // console.log(window._data[1]);
-        // console.log(filter._data);
-        
+
         sum += dot(window._data[0], filter._data[0]) + dot(window._data[1], filter._data[1]) + dot(window._data[2], filter._data[2])
+        //console.log(sum);
         newMatrix.set([i-1, j-1], sum)
       }
     }
@@ -40,13 +42,15 @@ function App() {
 
   const modImage = () => {
     // if (!imageLoaded) return;
-    const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+    // const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+    // const RIDGE = matrix([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
+    const IDENTITY = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
     const canvas = canvasRef.current
-    const ctx = canvas.getContext('2d')
+    const ctx = canvas.getContext('2d', {willReadFrequently:true})
     ctx.willReadFrequently = true
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
     const data = imageData.data
-    console.log(data);
+    //console.log(data);
 
     const width = canvas.width;
     const height = canvas.height;
@@ -61,7 +65,6 @@ function App() {
     const alphaMatrix = []
     
 
-    console.log(redMatrix);
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
         const i = (y * width + x) * 4;
@@ -72,23 +75,23 @@ function App() {
       }
     }
 
-    const nRedMatrix = convolve(redMatrix, IDENTITY, width, height)
-    const nBlueMatrix = convolve(blueMatrix, IDENTITY, width, height)
-    const nGreenMatrix = convolve(greenMatrix, IDENTITY, width, height)
+    const nRedMatrix = convolve(redMatrix, IDENTITY, newWidth, newHeight)
+    const nBlueMatrix = convolve(blueMatrix, IDENTITY, newWidth, newHeight)
+    const nGreenMatrix = convolve(greenMatrix, IDENTITY, newWidth, newHeight)
 
-    console.log("77");
     const combinedArray = new Uint8ClampedArray(width * height * 4);
     for (let y = 0; y < ((width * height) * 4); y+=4) {
+      //console.log(y);
       combinedArray[y] = nRedMatrix.get([y/4])
       combinedArray[y+1] = nGreenMatrix.get([y/4])
       combinedArray[y+2] = nBlueMatrix.get([y/4])
       combinedArray[y+3] = alphaMatrix[y/4]
     }
     
-    console.log(
-      combinedArray
-    );
-    console.log(redMatrix, greenMatrix, blueMatrix);
+    // console.log(
+    //   combinedArray
+    // );
+    // console.log(nRedMatrix, nGreenMatrix, nBlueMatrix);
   
     const newImageData = new ImageData(combinedArray, width, height);
     ctx.putImageData(newImageData, 0, 0);
@@ -98,8 +101,8 @@ function App() {
   return (
     <>
       <h1>UW CSE 455 Kernel Cooker</h1>
-      <canvas ref={canvasRef} width={5} height={5}/>
-      <button onClick={modImage}>Evangelion</button>
+      <canvas ref={canvasRef} width={200} height={200}/>
+      <button onClick={modImage}>Apply Kernel</button>
       <div>
         Built for CSE 455 by Derek Zhu and Ruslan Mukladheev
       </div>

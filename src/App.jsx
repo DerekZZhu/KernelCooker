@@ -47,7 +47,7 @@ function App() {
     const IDENTITY = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d', {willReadFrequently:true})
-    ctx.willReadFrequently = true
+    // ctx.willReadFrequently = true
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
     const data = imageData.data
     //console.log(data);

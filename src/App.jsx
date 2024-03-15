@@ -3,6 +3,8 @@ import { matrix, concat, zeros, index, range, flatten, subset, dot, identity, ro
 
 import reactLogo from './assets/react.svg'
 import vd from './assets/Vd-Orig.png'
+import lenna from './assets/Lenna.png'
+import tm from './assets/ThisMan.jpg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
@@ -17,7 +19,7 @@ function App() {
   const canvasRef = useRef(null)
   useEffect(() => {
     const img = new Image()
-    img.src = vd
+    img.src = tm
     img.onload = () => {
       const canvas = canvasRef.current
       const ctx = canvas.getContext('2d')
@@ -101,7 +103,7 @@ function App() {
   return (
     <>
       <h1>UW CSE 455 Kernel Cooker</h1>
-      <canvas ref={canvasRef} width={200} height={200}/>
+      <canvas ref={canvasRef} width={500} height={500}/>
       <button onClick={modImage}>Apply Kernel</button>
       <div>
         Built for CSE 455 by Derek Zhu and Ruslan Mukladheev

@@ -30,12 +30,12 @@ function App() {
       setImageSize([img.naturalWidth, img.naturalHeight])
       ctx.drawImage(img, 0, 0)
     }
-  }, [resetImage])
+  }, [])
 
   function convolve(mat, filter, width, height) {
     const newMatrix = zeros(mat._size[0]-2, mat._size[1]-2)
-    for (var i = 1; i < height-1; i++) {
-      for (var j = 1; j < width-1; j++) {
+    for (var i = 1; i < mat._size[0]-1; i++) {
+      for (var j = 1; j < mat._size[1]-1; j++) {
         var sum = 0
         var window = subset(mat, index(range(i-1, i+2), range(j-1, j+2)))
 
@@ -45,6 +45,10 @@ function App() {
       }
     }
     return flatten(newMatrix)
+  }
+
+  function convolveAll(mats, filter, width, height) {
+
   }
 
   const modImage = () => {
@@ -109,6 +113,7 @@ function App() {
       <h1>UW CSE 455 Kernel Cooker</h1>
       <canvas ref={canvasRef} />
       <button onClick={modImage}>Apply Kernel</button>
+      {/* <button onClick={refresh}>Refresh Image</button> */}
       <div>
         Built for CSE 455 by Derek Zhu and Ruslan Mukladheev
       </div>

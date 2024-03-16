@@ -17,20 +17,25 @@ function App() {
   // console.log(convolve(img, IDENTITY, 5, 5));
 
   const canvasRef = useRef(null)
+  const [imageSize, setImageSize] = useState([0,0])
+
   useEffect(() => {
     const img = new Image()
-    img.src = tm
+    img.src = vd
     img.onload = () => {
       const canvas = canvasRef.current
       const ctx = canvas.getContext('2d')
+      canvas.width = img.width
+      canvas.height = img.height
+      setImageSize([img.naturalWidth, img.naturalHeight])
       ctx.drawImage(img, 0, 0)
     }
   }, [])
 
   function convolve(mat, filter, width, height) {
     const newMatrix = zeros(mat._size[0]-2, mat._size[1]-2)
-    for (var i = 1; i < height-1; i++) {
-      for (var j = 1; j < width-1; j++) {
+    for (var i = 1; i < mat._size[0]-1; i++) {
+      for (var j = 1; j < mat._size[1]-1; j++) {
         var sum = 0
         var window = subset(mat, index(range(i-1, i+2), range(j-1, j+2)))
 
@@ -42,6 +47,10 @@ function App() {
     return flatten(newMatrix)
   }
 
+  function convolveAll(mats, filter, width, height) {
+
+  }
+
   const modImage = () => {
     // if (!imageLoaded) return;
     // const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
@@ -49,7 +58,7 @@ function App() {
     const IDENTITY = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d', {willReadFrequently:true})
-    // ctx.willReadFrequently = true
+    ctx.willReadFrequently = true
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height)
     const data = imageData.data
     //console.log(data);
@@ -99,12 +108,12 @@ function App() {
     ctx.putImageData(newImageData, 0, 0);
   }
 
-
   return (
     <>
       <h1>UW CSE 455 Kernel Cooker</h1>
-      <canvas ref={canvasRef} width={500} height={500}/>
+      <canvas ref={canvasRef} />
       <button onClick={modImage}>Apply Kernel</button>
+      {/* <button onClick={refresh}>Refresh Image</button> */}
       <div>
         Built for CSE 455 by Derek Zhu and Ruslan Mukladheev
       </div>

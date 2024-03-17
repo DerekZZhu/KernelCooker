@@ -8,19 +8,18 @@ import tm from './assets/ThisMan.jpg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-
-
-
 function App() {
-  //const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
-  // const img = matrix([[0,0,0,0,0], [0,1, 2, 3,0], [0,4, 5, 6,0], [0,7, 8, 9,0],[0,0,0,0,0]])
-  // console.log(convolve(img, IDENTITY, 5, 5));
+    const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+    const RIDGE = matrix([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
+    const SHARPEN = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
   const canvasRef = useRef(null)
-  const images = [{name: "Vampire Deer", img_: vd}, {name: "lenna", img_:lenna}, {name:"This Man", img_:tm}]
+  const [cFilter, setCFilter] = useState(null)
+  const images = [{name: "Vampire Deer", img_: vd}, {name: "Lenna", img_:lenna}, {name:"This Man", img_:tm}]
 
   useEffect(() => {
     drawImage(vd)
+    setCFilter(matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]))
   }, [])
 
   const drawImage = (src) => {
@@ -64,9 +63,7 @@ function App() {
 
   const modImage = () => {
     // if (!imageLoaded) return;
-    // const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
-    // const RIDGE = matrix([[0, -1, 0], [-1, 4, -1], [0, -1, 0]])
-    const IDENTITY = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+    const FILTER = cFilter
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d', {willReadFrequently:true})
     ctx.willReadFrequently = true
@@ -84,8 +81,6 @@ function App() {
     const redMatrix = zeros(newHeight, newWidth);
     const greenMatrix = zeros(newHeight, newWidth);
     const blueMatrix = zeros(newHeight, newWidth);
-    const alphaMatrix = []
-    
 
     for (var y = 0; y < height; y++) {
       for (var x = 0; x < width; x++) {
@@ -95,9 +90,8 @@ function App() {
         blueMatrix.set([y + padding, x + padding], data[i + 2]);
       }
     }
-    console.log(alphaMatrix);
     
-    const combinedArray = convolveAll(redMatrix, greenMatrix, blueMatrix, IDENTITY)
+    const combinedArray = convolveAll(redMatrix, greenMatrix, blueMatrix, FILTER)
     const newImageData = new ImageData(combinedArray, width, height);
     ctx.putImageData(newImageData, 0, 0);
   }

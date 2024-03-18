@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { matrix, concat, zeros, index, range, flatten, subset, dot, identity, row } from 'mathjs'
+import { Menu } from '@headlessui/react'
+import { Input } from './input'
 
 import reactLogo from './assets/react.svg'
 import vd from './assets/Vd-Orig.png'
@@ -7,6 +9,7 @@ import lenna from './assets/Lenna.png'
 import tm from './assets/ThisMan.jpg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import { ChevronDown } from 'lucide-react'
 
 function App() {
     const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
@@ -15,11 +18,27 @@ function App() {
 
   const canvasRef = useRef(null)
   const [cFilter, setCFilter] = useState(null)
+  const [stringFilter, setStringFilter] = useState('Sharpen');
+  const [stringImage, setStringImage] = useState('Vampire Deer');
+  const [isCustom, setIsCustom] = useState(false);
   const images = [{name: "Vampire Deer", img_: vd}, {name: "Lenna", img_:lenna}, {name:"This Man", img_:tm}]
+
+  const [grid, setGrid] = useState([
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+  ]);
+
+  const handleInputChange = (rowIndex, colIndex, value) => {
+    const newGrid = [...grid];
+    newGrid[rowIndex][colIndex] = value; 
+    setGrid(newGrid);
+  };
 
   useEffect(() => {
     drawImage(vd)
     setCFilter(matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]))
+    setStringFilter('Sharpen');
   }, [])
 
   const drawImage = (src) => {
@@ -96,28 +115,99 @@ function App() {
     ctx.putImageData(newImageData, 0, 0);
   }
 
+  const handleInputFocus = (e) => {
+    e.target.select();
+  };
+
   return (
-    <>
-      <h1>UW CSE 455 Kernel Cooker</h1>
-      <div>
-        {
-          images.map((img_, i) => {
-            console.log(img_);
-            return(
-              <button key={i} onClick={() => changeImage(img_.img_)}>{img_.name}</button>
-            )
-          })
-        }
-      </div>
+    <main className='w-full h-screen grid grid-cols-2 p-24 '>
+      <div className='w-full h-full flex flex-col'>
+        <h1 className='font-bold font-sans mb-4'>UW CSE 455 Kernel Cooker</h1>
+        <div className="flex gap-2">
+          <Menu as="div" className="relative inline-block text-right">
+            <div>
+              <Menu.Button className="inline-flex justify-center w-full rounded-md border bg-neutral-900 ">
+                Kernel: {stringFilter} <ChevronDown className='ml-2 mt-0.5' size={20} />
+              </Menu.Button>
+              
+            </div>
+            <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 bg-neutral-900 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
+              <div className="px-1 py-1 ">
+                <Menu.Item>
+                  <button className='w-full text-left' onClick={() => {setCFilter(IDENTITY), setStringFilter("Identity")}}>Identity</button>
+                </Menu.Item>
+                <Menu.Item>
+                  <button className='w-full text-left' onClick={() => {setCFilter(RIDGE), setStringFilter("Ridge")}}>Ridge</button>
+                </Menu.Item>
+                <Menu.Item>
+                  <button className="flex justify-between w-full px-4 py-2 text-sm " onClick={() => {setCFilter(SHARPEN), setStringFilter("Sharpen")}}>Sharpen</button>
+                </Menu.Item>
 
-      <canvas ref={canvasRef} width={200}  height={200}/>
-      <button onClick={modImage}>Apply Kernel</button>
-      {/* <button onClick={refresh}>Refresh Image</button> */}
+                {/* <Menu.Item>
+                  <button className="flex justify-between w-full px-4 py-2 text-sm " onClick={() => {setIsCustom(true), setStringFilter("Custom")}}>Custom</button>
+                </Menu.Item> */}
 
-      <div>
-        Built for CSE 455 by Derek Zhu and Ruslan Mukladheev
+              </div>
+            </Menu.Items>
+          </Menu>
+
+          <Menu as="div" className="relative inline-block text-right">
+            <div>
+              <Menu.Button className="inline-flex justify-center w-full rounded-md border bg-neutral-900 ">
+                Image: {stringImage} <ChevronDown className='ml-2 mt-0.5' size={20} />
+              </Menu.Button>
+              
+            </div>
+            <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 bg-neutral-900 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
+              <div className="px-1 py-1 ">
+                {images.map((img_, i) => {
+                  return(
+                    <Menu.Item key={i}>
+                      <button className='w-full text-left' onClick={() => {changeImage(img_.img_), setStringImage(img_.name)}}>{img_.name}</button>
+                    </Menu.Item>
+                  )
+                })}
+
+              </div>
+            </Menu.Items>
+          </Menu>
+
+          <button onClick={modImage} className=' bg-neutral-900 rounded-md'>Apply Kernel</button>
+        </div>
+
+        <div className='flex flex-col'>
+          <h2 className='font-semibold font-sans text-3xl mt-12'>Custom Kernel</h2>
+          <p className='font-sans text-lg text-neutral-400'>Enter a 3x3 matrix to apply a custom kernel to the image.</p>
+
+          <div className='grid grid-cols-3 grid-rows-3 w-full lg:w-[460px] gap-2 mt-3'>
+            {grid.map((row, rowIndex) => (
+              row.map((cell, colIndex) => (
+                <input
+                  key={`${rowIndex}-${colIndex}`}
+                  placeholder='0'
+                  value={cell}
+                  onFocus={handleInputFocus} 
+                  onClick={() => {setStringFilter('Custom'), setCFilter(matrix(grid))}}
+                  onChange={(e) => handleInputChange(rowIndex, colIndex, e.target.value)}
+                  className='aspect-square h-full w-full text-center font-bold text-5xl rounded-2xl bg-neutral-900'
+                />
+              ))
+            ))}
+          </div>
+        </div>
+
+      
+
+        <div className="mt-24">
+          Built for CSE 455 by Derek Zhu and Ruslan Mukhamedvaleev.
+        </div>
       </div>
-    </>
+      <div className='relative'>
+        
+        <canvas className='top-0 right-0 absolute' ref={canvasRef} width={600}  height={600}/>
+      </div>
+      
+    </main>
   )
 }
 

@@ -9,7 +9,9 @@ import lenna from './assets/Lenna.png'
 import tm from './assets/ThisMan.jpg'
 import viteLogo from '/vite.svg'
 import './App.css'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Settings } from 'lucide-react'
+
+
 
 function App() {
     const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
@@ -176,7 +178,7 @@ function App() {
         </div>
 
         <div className='flex flex-col'>
-          <h2 className='font-semibold font-sans text-3xl mt-12'>Custom Kernel</h2>
+          <h2 className='font-semibold font-sans text-3xl mt-12'>Custom Kernel <span className='inline-block'><button className=' bg-transparent ml-0.5 -mb-1 p-0'><Settings className='mt-1' /></button></span></h2>
           <p className='font-sans text-lg text-neutral-400'>Enter a 3x3 matrix to apply a custom kernel to the image.</p>
 
           <div className='grid grid-cols-3 grid-rows-3 w-full lg:w-[460px] gap-2 mt-3'>
@@ -202,9 +204,9 @@ function App() {
           Built for CSE 455 by Derek Zhu and Ruslan Mukhamedvaleev.
         </div>
       </div>
-      <div className='relative'>
+      <div className='flex justify-center items-center max-h-[900px]'>
         
-        <canvas className='top-0 right-0 absolute' ref={canvasRef} width={600}  height={600}/>
+        <canvas className='m-auto' ref={canvasRef} width={200}  height={200}/>
       </div>
       
     </main>

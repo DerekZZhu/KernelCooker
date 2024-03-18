@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { matrix, concat, zeros, index, range, flatten, subset, dot, identity, row } from 'mathjs'
+import { matrix, zeros, index, range, subset, dot} from 'mathjs'
 import { Menu } from '@headlessui/react'
 import { Input } from './input'
 
-import reactLogo from './assets/react.svg'
 import vd from './assets/Vd-Orig.png'
 import lenna from './assets/Lenna.png'
 import tm from './assets/ThisMan.jpg'

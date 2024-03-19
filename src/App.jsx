@@ -1,9 +1,8 @@
 import { useState, useEffect, useRef } from 'react'
-import { matrix, concat, zeros, index, range, flatten, subset, dot, identity, row } from 'mathjs'
+import { matrix, zeros, index, range, subset, dot} from 'mathjs'
 import { Menu } from '@headlessui/react'
 import { Input } from './input'
 
-import reactLogo from './assets/react.svg'
 import vd from './assets/Vd-Orig.png'
 import lenna from './assets/Lenna.png'
 import tm from './assets/ThisMan.jpg'
@@ -14,15 +13,18 @@ import { ChevronDown, Settings } from 'lucide-react'
 
 
 function App() {
-    const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
-    const RIDGE = matrix([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
-    const SHARPEN = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+  const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+  const RIDGE = matrix([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
+  const SHARPEN = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
   const canvasRef = useRef(null)
   const [cFilter, setCFilter] = useState(null)
   const [stringFilter, setStringFilter] = useState('Sharpen');
   const [stringImage, setStringImage] = useState('Vampire Deer');
+
   const [isCustom, setIsCustom] = useState(false);
+
+  const preCooked = [{name: "Identity", kernel: IDENTITY}, {name:"Ridge", kernel: RIDGE}, {name: "Sharpen", kernel:SHARPEN}]
   const images = [{name: "Vampire Deer", img_: vd}, {name: "Lenna", img_:lenna}, {name:"This Man", img_:tm}]
 
   const [grid, setGrid] = useState([
@@ -37,9 +39,14 @@ function App() {
     setGrid(newGrid);
   };
 
+  const presetGrid = (matrix) => {
+    setGrid(matrix._data)
+  }
+
   useEffect(() => {
     drawImage(vd)
-    setCFilter(matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]))
+    setCFilter(SHARPEN)
+    setGrid(SHARPEN._data)
     setStringFilter('Sharpen');
   }, [])
 
@@ -135,15 +142,25 @@ function App() {
             </div>
             <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 bg-neutral-900 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
               <div className="px-1 py-1 ">
-                <Menu.Item>
-                  <button className='w-full text-left' onClick={() => {setCFilter(IDENTITY), setStringFilter("Identity")}}>Identity</button>
-                </Menu.Item>
-                <Menu.Item>
-                  <button className='w-full text-left' onClick={() => {setCFilter(RIDGE), setStringFilter("Ridge")}}>Ridge</button>
+                {preCooked.map((kernel_info, i) => {
+                    return(
+                      <Menu.Item key={i}>
+                        <button className='w-full text-left' 
+                                onClick={() => {
+                                  setCFilter(kernel_info.kernel), 
+                                  setStringFilter(kernel_info.name), 
+                                  presetGrid(kernel_info.kernel)}}
+                        >{kernel_info.name}</button>
+                      </Menu.Item>
+                    )
+                  })}
+
+                {/* <Menu.Item>
+                  <button className='w-full text-left' onClick={() => {setCFilter(RIDGE), setStringFilter("Ridge"), presetGrid(RIDGE)}}>Ridge</button>
                 </Menu.Item>
                 <Menu.Item>
                   <button className="flex justify-between w-full px-4 py-2 text-sm " onClick={() => {setCFilter(SHARPEN), setStringFilter("Sharpen")}}>Sharpen</button>
-                </Menu.Item>
+                </Menu.Item> */}
 
                 {/* <Menu.Item>
                   <button className="flex justify-between w-full px-4 py-2 text-sm " onClick={() => {setIsCustom(true), setStringFilter("Custom")}}>Custom</button>

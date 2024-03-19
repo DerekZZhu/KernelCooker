@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from 'react'
 import { matrix, zeros, index, range, subset, dot} from 'mathjs'
 import { Menu } from '@headlessui/react'
-import { Input } from './input'
 
 import vd from './assets/Vd-Orig.png'
 import lenna from './assets/Lenna.png'
 import tm from './assets/ThisMan.jpg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { ChevronDown, Settings } from 'lucide-react'
 
@@ -21,8 +19,6 @@ function App() {
   const [cFilter, setCFilter] = useState(null)
   const [stringFilter, setStringFilter] = useState('Sharpen');
   const [stringImage, setStringImage] = useState('Vampire Deer');
-
-  const [isCustom, setIsCustom] = useState(false);
 
   const preCooked = [{name: "Identity", kernel: IDENTITY}, {name:"Ridge", kernel: RIDGE}, {name: "Sharpen", kernel:SHARPEN}]
   const images = [{name: "Vampire Deer", img_: vd}, {name: "Lenna", img_:lenna}, {name:"This Man", img_:tm}]

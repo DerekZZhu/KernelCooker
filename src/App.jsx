@@ -139,15 +139,15 @@ function App() {
   };
 
   return (
-    <main className='w-full h-screen grid grid-cols-2 overflow-x-hidden'>
+    <main className='w-full h-screen lg:grid lg:grid-cols-4 2xl:grid-cols-2 overflow-x-hidden max-w-[2000px] items-center mx-auto'>
       {loading && <div className=' bg-neutral-950/50 absolute z-10 h-screen w-screen cursor-wait'>
         <div className='flex justify-center items-center h-full'><p className='text-3xl font-bold text-white'>Loading...</p></div>
       </div>}
 
-      <div className='w-full h-full flex flex-col p-24'>
-        <h1 className='font-bold font-sans mb-4 tracking-tight'>UW CSE 455 Kernel Cooker</h1>
-        <div className="flex gap-2">
-          <Menu as="div" className="relative inline-block text-right">
+      <div className='w-full h-full flex flex-col p-24 2xl:col-span-1 lg:col-span-3'>
+        <h1 className='font-bold font-sans mb-4 tracking-tight text-3xl lg:text-4xl xl:text-5xl'>UW CSE 455 Kernel Cooker</h1>
+        <div className="flex gap-2 flex-wrap">
+          <Menu as="div" className="relative inline-block text-right w-full md:w-auto">
             <div>
               <Menu.Button className="inline-flex justify-center tracking-[-0.01em] w-full rounded-md border bg-neutral-900 ">
                 Kernel: {stringFilter} <ChevronDown className='ml-2 mt-0.5' size={20} />
@@ -184,7 +184,7 @@ function App() {
             </Menu.Items>
           </Menu>
 
-          <Menu as="div" className="relative inline-block text-right">
+          <Menu as="div" className="relative inline-block text-right  w-full md:w-auto">
             <div>
               <Menu.Button className="inline-flex justify-center w-full rounded-md border bg-neutral-900 tracking-[-0.01em]">
                 Image: {stringImage} <ChevronDown className='ml-2 mt-0.5' size={20} />
@@ -204,13 +204,13 @@ function App() {
               </div>
             </Menu.Items>
           </Menu>
-          <button onClick={modImage} className=' bg-neutral-900 rounded-md tracking-[-0.01em]'>Apply Kernel</button>
-          <button onClick={() => {drawImage(img)}}>Reset Image</button>
+          <button onClick={modImage} className=' bg-neutral-900 rounded-md tracking-[-0.01em]  w-full md:w-auto'>Apply Kernel</button>
+          <button onClick={() => {drawImage(img)}} className=' w-full md:w-auto'>Reset Image</button>
           
         </div>
 
         <div className='flex flex-col'>
-          <h2 className='font-semibold font-sans text-3xl mt-12 tracking-tight'>Custom Kernel <span className='inline-block'><button type="button" onClick={openModal} className=' bg-transparent ml-0.5 -mb-1 p-0'><Settings className='mt-1' /></button></span></h2>
+          <h2 className='font-semibold font-sans text-3xl mt-12 tracking-tight'>Kernel Matrix <span className='inline-block'><button type="button" onClick={openModal} className=' bg-transparent ml-0.5 -mb-1 p-0'><Settings className='mt-1' /></button></span></h2>
           
           <Transition appear show={isOpen} as={Fragment}>
         <Dialog as="div" className="relative z-10" onClose={closeModal}>
@@ -310,10 +310,10 @@ function App() {
       
 
         <div className="mt-24">
-          Built for CSE 455 by Derek Zhu and Ruslan Mukhamedvaleev.
+          Built for CSE 455 by <a className=' text-neutral-100 hover:text-white transition' href='https://www.linkedin.com/in/derek-zhu-873477215/'>Derek Zhu</a> and <a className='text-neutral-100 hover:text-white transition' href='https://www.ruslan.in'>Ruslan Mukhamedvaleev.</a>
         </div>
       </div>
-      <div className='flex justify-center items-center max-h-[900px] p-24'>
+      <div className='flex justify-center items-center max-h-[900px] w-1/6 2xl:w-full p-24 m-auto '>
         
         <canvas className='m-auto' ref={canvasRef}/>
       </div>

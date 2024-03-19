@@ -13,15 +13,18 @@ import { ChevronDown, Settings } from 'lucide-react'
 
 
 function App() {
-    const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
-    const RIDGE = matrix([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
-    const SHARPEN = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
+  const IDENTITY = matrix([[0, 0, 0], [0, 1, 0], [0, 0, 0]])
+  const RIDGE = matrix([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
+  const SHARPEN = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
   const canvasRef = useRef(null)
   const [cFilter, setCFilter] = useState(null)
   const [stringFilter, setStringFilter] = useState('Sharpen');
   const [stringImage, setStringImage] = useState('Vampire Deer');
+
   const [isCustom, setIsCustom] = useState(false);
+
+  const preCooked = [{name: "Identity", kernel: IDENTITY}, {name:"Ridge", kernel: RIDGE}, ]
   const images = [{name: "Vampire Deer", img_: vd}, {name: "Lenna", img_:lenna}, {name:"This Man", img_:tm}]
 
   const [grid, setGrid] = useState([
@@ -36,9 +39,14 @@ function App() {
     setGrid(newGrid);
   };
 
+  const presetGrid = (matrix) => {
+    setGrid(matrix._data)
+  }
+
   useEffect(() => {
     drawImage(vd)
     setCFilter(matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]))
+    setGrid([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
     setStringFilter('Sharpen');
   }, [])
 
@@ -135,10 +143,10 @@ function App() {
             <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 bg-neutral-900 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
               <div className="px-1 py-1 ">
                 <Menu.Item>
-                  <button className='w-full text-left' onClick={() => {setCFilter(IDENTITY), setStringFilter("Identity")}}>Identity</button>
+                  <button className='w-full text-left' onClick={() => {setCFilter(IDENTITY), setStringFilter("Identity"), presetGrid(IDENTITY)}}>Identity</button>
                 </Menu.Item>
                 <Menu.Item>
-                  <button className='w-full text-left' onClick={() => {setCFilter(RIDGE), setStringFilter("Ridge")}}>Ridge</button>
+                  <button className='w-full text-left' onClick={() => {setCFilter(RIDGE), setStringFilter("Ridge"), presetGrid(RIDGE)}}>Ridge</button>
                 </Menu.Item>
                 <Menu.Item>
                   <button className="flex justify-between w-full px-4 py-2 text-sm " onClick={() => {setCFilter(SHARPEN), setStringFilter("Sharpen")}}>Sharpen</button>

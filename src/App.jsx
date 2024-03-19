@@ -17,10 +17,11 @@ function App() {
   const RIDGE = matrix([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
   const SHARPEN = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
-  const canvasRef = useRef(null)
-  const [cFilter, setCFilter] = useState(null)
+  const canvasRef = useRef(null);
+  const [cFilter, setCFilter] = useState(null);
   const [stringFilter, setStringFilter] = useState('Sharpen');
   const [stringImage, setStringImage] = useState('Vampire Deer');
+  const [img, setImg] = useState(vd)
 
   const [isCustom, setIsCustom] = useState(false);
 
@@ -55,7 +56,7 @@ function App() {
     img.src = src
     img.onload = () => {
       const canvas = canvasRef.current
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext('2d', { willReadFrequently: true })
       canvas.width = img.width
       canvas.height = img.height
       ctx.drawImage(img, 0, 0)
@@ -64,6 +65,7 @@ function App() {
 
   const changeImage = (src) => {
     drawImage(src)
+    setImg(src)
   }
 
   function convolveAll(mat_r, mat_g, mat_b, filter) {
@@ -192,6 +194,7 @@ function App() {
           </Menu>
 
           <button onClick={modImage} className=' bg-neutral-900 rounded-md'>Apply Kernel</button>
+          <button onClick={() => {drawImage(img)}}>Reset Image</button>
         </div>
 
         <div className='flex flex-col'>
@@ -223,7 +226,7 @@ function App() {
       </div>
       <div className='flex justify-center items-center max-h-[900px]'>
         
-        <canvas className='m-auto' ref={canvasRef} width={200}  height={200}/>
+        <canvas className='m-auto' ref={canvasRef}/>
       </div>
       
     </main>

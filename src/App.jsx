@@ -5,6 +5,9 @@ import { Menu, Dialog, Transition } from '@headlessui/react'
 import vd from './assets/Vd-Orig.png'
 import lenna from './assets/Lenna.png'
 import tm from './assets/ThisMan.jpg'
+import gates from './assets/gates.png'
+import baboon from './assets/baboon.jpg'
+
 import './App.css'
 import { ChevronDown, Settings, X } from 'lucide-react'
 
@@ -42,7 +45,11 @@ function App() {
                      {name:"Horizontal Edge", kernel:SOBEL_H},
                      {name:"Vertical Edge", kernel:SOBEL_V}]
 
-  const images = [{name: "Vampire Deer", img_: vd}, {name: "Lenna", img_:lenna}, {name:"This Man", img_:tm}]
+  const images = [{name: "Vampire Deer", img_: vd}, 
+                  {name: "Lenna", img_:lenna}, 
+                  {name:"This Man", img_:tm}, 
+                  {name:"Gates Building", img_:gates},
+                  {name:"Baboon", img_:baboon}]
 
   const [grid, setGrid] = useState([
     [0, 0, 0],

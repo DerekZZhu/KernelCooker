@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, Fragment } from 'react'
-import { matrix, zeros, index, range, subset, dot} from 'mathjs'
+import { matrix, zeros } from 'mathjs'
 import { Menu, Dialog, Transition } from '@headlessui/react'
 
 import vd from './assets/Vd-Orig.png'

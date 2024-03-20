@@ -69,27 +69,36 @@ function App() {
   }
 
   function convolveAll(mat_r, mat_g, mat_b, filter) {
-    //const combinedArray = new Uint8ClampedArray(width * height * 4);
-    const holderArray = []
-    for (var i = 1; i < mat_r._size[0]-1; i++) {
-      for (var j = 1; j < mat_r._size[1]-1; j++) {
-        var window_r = subset(mat_r, index(range(i-1, i+2), range(j-1, j+2)))
-        var window_g = subset(mat_g, index(range(i-1, i+2), range(j-1, j+2)))
-        var window_b = subset(mat_b, index(range(i-1, i+2), range(j-1, j+2)))
+    const rows = mat_r.size()[0];
+    const cols = mat_r.size()[1];
+    const holderArray = new Uint8ClampedArray((rows - 2) * (cols - 2) * 4);
+    let holderIndex = 0;
 
-        var sum_r = dot(window_r._data[0], filter._data[0]) + dot(window_r._data[1], filter._data[1]) + dot(window_r._data[2], filter._data[2])
-        var sum_g = dot(window_g._data[0], filter._data[0]) + dot(window_g._data[1], filter._data[1]) + dot(window_g._data[2], filter._data[2])
-        var sum_b = dot(window_b._data[0], filter._data[0]) + dot(window_b._data[1], filter._data[1]) + dot(window_b._data[2], filter._data[2])
+    for (let i = 1; i < rows - 1; i++) {
+        for (let j = 1; j < cols - 1; j++) {
+            let sum_r = 0, sum_g = 0, sum_b = 0;
 
-        holderArray.push(sum_r)
-        holderArray.push(sum_g)
-        holderArray.push(sum_b)
-        holderArray.push(255)
-        // newMatrix.set([i-1, j-1], sum)
-      }
+            for (let fi = 0; fi < 3; fi++) {
+                for (let fj = 0; fj < 3; fj++) {
+                    const rVal = mat_r.get([i + fi - 1, j + fj - 1]);
+                    const gVal = mat_g.get([i + fi - 1, j + fj - 1]);
+                    const bVal = mat_b.get([i + fi - 1, j + fj - 1]);
+                    const fVal = filter.get([fi, fj]);
+
+                    sum_r += rVal * fVal;
+                    sum_g += gVal * fVal;
+                    sum_b += bVal * fVal;
+                }
+            }
+
+            holderArray[holderIndex++] = sum_r;
+            holderArray[holderIndex++] = sum_g;
+            holderArray[holderIndex++] = sum_b;
+            holderArray[holderIndex++] = 255;
+        }
     }
-    return new Uint8ClampedArray(holderArray)
-  }
+    return holderArray;
+}
 
   const modImage = () => {
     // if (!imageLoaded) return;

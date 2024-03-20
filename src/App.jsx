@@ -86,6 +86,15 @@ function App() {
     setImg(src)
   }
 
+  const handleImageUpload = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      const imageUrl = URL.createObjectURL(file)
+      drawImage(imageUrl)
+      setImg(imageUrl)
+    }
+  }
+
   function convolveAll(mat_r, mat_g, mat_b, filter) {
     const rows = mat_r.size()[0];
     const cols = mat_r.size()[1];
@@ -187,17 +196,6 @@ function App() {
                       </Menu.Item>
                     )
                   })}
-
-                {/* <Menu.Item>
-                  <button className='w-full text-left' onClick={() => {setCFilter(RIDGE), setStringFilter("Ridge"), presetGrid(RIDGE)}}>Ridge</button>
-                </Menu.Item>
-                <Menu.Item>
-                  <button className="flex justify-between w-full px-4 py-2 text-sm " onClick={() => {setCFilter(SHARPEN), setStringFilter("Sharpen")}}>Sharpen</button>
-                </Menu.Item> */}
-
-                {/* <Menu.Item>
-                  <button className="flex justify-between w-full px-4 py-2 text-sm " onClick={() => {setIsCustom(true), setStringFilter("Custom")}}>Custom</button>
-                </Menu.Item> */}
 
               </div>
             </Menu.Items>
@@ -318,7 +316,7 @@ function App() {
                                     <p class="mb-2 text-sm text-neutral-500 dark:text-neutral-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
                                     <p class="text-xs text-neutral-500 dark:text-neutral-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
                                 </div>
-                                <input id="dropzone-file" type="file" className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' />
+                                <input id="dropzone-file" type="file" accept="iamge/*" onChange={handleImageUpload} className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' />
                             </label>
                         </div> 
                     </div>

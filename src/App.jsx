@@ -17,6 +17,9 @@ function App() {
   const RIDGE = matrix([[-1, -1, -1], [-1, 8, -1], [-1, -1, -1]])
   const SHARPEN = matrix([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
 
+  const SOBEL_H = matrix([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
+  const SOBEL_V = matrix([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
+
   const canvasRef = useRef(null);
   const [cFilter, setCFilter] = useState(null);
   const [stringFilter, setStringFilter] = useState('Sharpen');
@@ -25,7 +28,12 @@ function App() {
 
   const [isCustom, setIsCustom] = useState(false);
 
-  const preCooked = [{name: "Identity", kernel: IDENTITY}, {name:"Ridge", kernel: RIDGE}, {name: "Sharpen", kernel:SHARPEN}]
+  const preCooked = [{name: "Identity", kernel: IDENTITY}, 
+                     {name:"Ridge", kernel: RIDGE}, 
+                     {name: "Sharpen", kernel:SHARPEN}, 
+                     {name:"Horizontal Edge", kernel:SOBEL_H},
+                     {name:"Vertical Edge", kernel:SOBEL_V}]
+
   const images = [{name: "Vampire Deer", img_: vd}, {name: "Lenna", img_:lenna}, {name:"This Man", img_:tm}]
 
   const [grid, setGrid] = useState([

@@ -11,6 +11,12 @@ input::-webkit-inner-spin-button {
 input[type=number] {
   -moz-appearance: textfield;
 }
+
+#root{
+
+  padding: 0;
+}
+
 /* 
 #root {
   max-width: 1280px;

@@ -366,6 +366,13 @@ function App() {
         </div>
 
       
+        <div className="mt-24">
+          Resources:
+          <ul>
+            <a href="https://www.youtube.com/watch?v=KuXjwB4LzSA&t=1s">But what is a convolution?</a>
+            <a href="https://en.wikipedia.org/wiki/Kernel_(image_processing)">Kernels (Image Processing)</a>
+          </ul>
+        </div>
 
         <div className="mt-24">
           Built for CSE 455 by <a className=' text-neutral-100 hover:text-white transition' href='https://www.linkedin.com/in/derek-zhu-873477215/'>Derek Zhu</a> and <a className='text-neutral-100 hover:text-white transition' href='https://www.ruslan.in'>Ruslan Mukhamedvaleev.</a>

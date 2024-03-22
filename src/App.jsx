@@ -9,7 +9,7 @@ import gates from './assets/gates.png'
 import baboon from './assets/baboon.jpg'
 
 import './App.css'
-import { ChevronDown, Settings, X } from 'lucide-react'
+import { CheckCircle, ChevronDown, Settings, X } from 'lucide-react'
 
 
 
@@ -27,12 +27,14 @@ function App() {
   const [stringImage, setStringImage] = useState('Vampire Deer');
   const [img, setImg] = useState(vd)
 
-  const [loading, setLoading] = useState(false)
-
+  const [isUploaded, setIsUploaded] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
 
   function closeModal() {
     setIsOpen(false)
+    setTimeout(() => {
+      setIsUploaded(false)
+    }, 300)
   }
 
   function openModal() {
@@ -94,13 +96,40 @@ function App() {
   }
 
   const handleImageUpload = (event) => {
-    const file = event.target.files[0]
+    const file = event.target.files[0];
     if (file) {
-      const imageUrl = URL.createObjectURL(file)
-      drawImage(imageUrl)
-      setImg(imageUrl)
+      setIsUploaded(true)
+      const imageUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.src = imageUrl;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let width = img.width;
+        let height = img.height;
+  
+        if (width >450 || height>450) {
+          if(width > height){
+            height = Math.round((450/width)*height);
+            width = 450;
+          }else{
+            width = Math.round((450/height)* width);
+            height = 450;
+          }
+        }
+  
+        canvas.width = width;
+        canvas.height = height;
+        ctx.drawImage(img, 0, 0, width, height);
+  
+        const scaledImageUrl = canvas.toDataURL('image/jpeg');
+        drawImage(scaledImageUrl);
+        setImg(scaledImageUrl);
+        setStringImage('Custom Image');
+      };
     }
-  }
+  };
 
   function convolveAll(mat_r, mat_g, mat_b, filter) {
     const rows = mat_r.size()[0];
@@ -172,14 +201,11 @@ function App() {
   const handleInputFocus = (e) => {
     e.target.select();
   };
+  
 
   return (
-    <main className='w-full h-screen lg:grid lg:grid-cols-4 2xl:grid-cols-2 overflow-x-hidden max-w-[2000px] items-center mx-auto'>
-      {loading && <div className=' bg-neutral-950/50 absolute z-10 h-screen w-screen cursor-wait'>
-        <div className='flex justify-center items-center h-full'><p className='text-3xl font-bold text-white'>Loading...</p></div>
-      </div>}
-
-      <div className='w-full h-full flex flex-col p-24 2xl:col-span-1 lg:col-span-3'>
+    <main className='w-full h-fit flex flex-col lg:flex-row overflow-x-hidden max-w-[2000px] items-center mx-auto'>
+      <div className='w-fit h-full flex flex-col p-24 2xl:col-span-1 lg:col-span-3'>
         <h1 className='font-bold font-sans mb-4 tracking-tight text-3xl lg:text-4xl xl:text-5xl'>UW CSE 455 Kernel Cooker</h1>
         <div className="flex gap-2 flex-wrap">
           <Menu as="div" className="relative inline-block text-right w-full md:w-auto">
@@ -232,12 +258,11 @@ function App() {
           <button onClick={() => {drawImage(img)}} className=' w-full md:w-auto'>Reset Image</button>
           
         </div>
-
         <div className='flex flex-col'>
           <h2 className='font-semibold font-sans text-3xl mt-12 tracking-tight'>Kernel Matrix <span className='inline-block'><button type="button" onClick={openModal} className=' bg-transparent ml-0.5 -mb-1 p-0'><Settings className='mt-1' /></button></span></h2>
           
           <Transition appear show={isOpen} as={Fragment}>
-            <Dialog as="div" className="relative z-10" onClose={closeModal}>
+          <Dialog as="div" className="relative z-10" onClose={closeModal}>
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -310,19 +335,16 @@ function App() {
                             value={fraction[1]}
                             onChange={(e) => {setFraction([fraction[0], e.target.value])}}
                             min={1}
-                            className="mt-1 text-center font-semibold text-3xl focus:ring-neutral-500 focus:border-neutral-500 block w-full shadow-sm border-2 rounded-md aspect-square bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition border-neutral-300 border-dashed"
+                            className="mt-1 text-center font-semibold text-3xl focus:ring-neutral-500 focus:border-neutral-500 block w-full shadow-sm border-2 rounded-md aspect-square bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition border-neutral-300 border-dashed"
                           />
                         </div>
                       </div>
                         <div class="flex items-center justify-center w-full mt-4 relative">
-                            <label for="dropzone-file" class="flex relative flex-col items-center justify-center w-full h-[222px] border-2 border-neutral-300 border-dashed rounded-lg cursor-pointer bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition">
+                          <label for="dropzone-file" className={`flex relative flex-col items-center justify-center w-full h-[222px] border-2 border-dashed rounded-lg cursor-pointer bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition ${isUploaded ? 'bg-green-50 dark:hover:bg-green-900 dark:bg-green-800 hover:bg-green-100 dark:border-green-600 hover:dark:border-green-700 border-green-500 hover:border-green-600' : 'bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100'}`}>
                                 <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <svg class="w-8 h-8 mb-4 text-neutral-500 dark:text-neutral-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                    </svg>
-                                    <p class="mb-2 text-sm text-neutral-500 dark:text-neutral-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>
-                                    <p class="text-xs text-neutral-500 dark:text-neutral-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
-                                </div>
+                                    { isUploaded ? <CheckCircle className='w-8 h-8 mb-4 text-green-500 dark:text-green-400' /> : <svg class="w-8 h-8 mb-4 text-neutral-500 dark:text-neutral-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16"> <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/> </svg>}
+                                    { isUploaded ? <p class="mb-2 text-sm text-green-500 dark:text-green-400"><span class="font-semibold">Uploaded</span> successfully</p> : <p class="mb-2 text-sm text-neutral-500 dark:text-neutral-400"><span class="font-semibold">Click to upload</span> or drag and drop</p>}
+                                    { isUploaded ? <p class="text-xs text-green-500 dark:text-green-400">Using Custom Image</p> : <p class="text-xs text-neutral-500 dark:text-neutral-400">PNG or JPG (MAX. 450 x 450px)</p>}                                </div>
                                 <input id="dropzone-file" type="file" accept="iamge/*" onChange={handleImageUpload} className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' />
                             </label>
                         </div> 
@@ -378,9 +400,9 @@ function App() {
           Built for CSE 455 by <a className=' text-neutral-100 hover:text-white transition' href='https://www.linkedin.com/in/derek-zhu-873477215/'>Derek Zhu</a> and <a className='text-neutral-100 hover:text-white transition' href='https://www.ruslan.in'>Ruslan Mukhamedvaleev.</a>
         </div>
       </div>
-      <div className='flex justify-center items-center max-h-[900px] w-1/6 2xl:w-full p-24 m-auto '>
+      <div className='justify-center items-center max-h-[980px] py-24 md:pt-48 w-fit m-auto '>
         
-        <canvas className='m-auto' ref={canvasRef}/>
+        <canvas className='m-auto w-[80vw] md:w-fit' ref={canvasRef}/>
       </div>
       
     </main>

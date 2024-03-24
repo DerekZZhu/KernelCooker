@@ -435,7 +435,7 @@ function App() {
                                   { isUploaded ? <CheckCircle className='w-8 h-8 mb-4 text-green-500 dark:text-green-400' /> : <svg   className="w-8 h-8 mb-4 text-neutral-500 dark:text-neutral-400"   aria-hidden="true"   xmlns="http://www.w3.org/2000/svg"   fill="none"   viewBox="0 0 20 16" >   {" "}   <path     stroke="currentColor"     strokeLinecap="round"     strokeLinejoin="round"     strokeWidth={2}     d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"   />{" "} </svg>}
                                   { isUploaded ? <p className="mb-2 text-sm text-green-500 dark:text-green-400"><span className="font-semibold">Uploaded</span> successfully</p> : <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>}
                                   { isUploaded ? <p className="text-xs text-green-500 dark:text-green-400">Using Custom Image</p> : <p className="text-xs text-neutral-500 dark:text-neutral-400">PNG or JPG (MAX. 450 x 450px)</p>}                                </div>
-                              <input id="dropzone-file" type="file" accept="iamge/*" onChange={handleImageUpload} className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' />
+                              <input id="dropzone-file" type="file" accept=".jpg, .jpeg, .png" onChange={handleImageUpload} className='absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer' />
                           </label>
                       </div> 
                     </div>

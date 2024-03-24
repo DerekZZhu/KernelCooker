@@ -9,7 +9,7 @@ import gates from './assets/gates.png'
 import baboon from './assets/baboon.jpg'
 
 import './App.css'
-import { ArrowDown, CheckCircle, ChevronDown, Settings, X } from 'lucide-react'
+import { ArrowDown, CheckCircle, ChevronDown, Info, Settings, X } from 'lucide-react'
 
 
 
@@ -29,9 +29,11 @@ function App() {
 
   const [isUploaded, setIsUploaded] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [isOpenInfo, setIsOpenInfo] = useState(false)
 
   function closeModal() {
     setIsOpen(false)
+    setIsOpenInfo(false)
     setTimeout(() => {
       setIsUploaded(false)
     }, 300)
@@ -224,7 +226,72 @@ function App() {
   return (
     <main className='w-full h-fit flex flex-col lg:flex-row overflow-x-hidden max-w-[2000px] items-center mx-auto'>
       <div className='w-fit h-full flex flex-col p-4 sm:p-4 md:p-12 lg:p-24 2xl:col-span-1 lg:col-span-3'>
-        <h1 className='font-bold font-sans mb-4 tracking-tight text-3xl lg:text-4xl xl:text-5xl'>UW CSE 455 Kernel Cooker</h1>
+        <h1 className='font-bold font-sans mb-4 tracking-tight text-3xl lg:text-4xl xl:text-5xl'>UW CSE 455 Kernel Cooker <span><button type="button" onClick={() => setIsOpenInfo(!isOpenInfo)} className='bg-transparent ml-0.5 p-0'><Info strokeWidth={2.5} className='' /></button></span></h1>
+        <Transition appear show={isOpenInfo} as={Fragment}>
+          <Dialog as="div" className="relative z-10" onClose={closeModal}>
+              <Transition.Child
+                as={Fragment}
+                enter="ease-out duration-300"
+                enterFrom="opacity-0"
+                enterTo="opacity-100"
+                leave="ease-in duration-200"
+                leaveFrom="opacity-100"
+                leaveTo="opacity-0"
+              >
+                <div className="fixed inset-0 bg-black/25" />
+              </Transition.Child>
+
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4 text-center">
+                  <Transition.Child
+                    as={Fragment}
+                    enter="ease-out duration-300"
+                    enterFrom="opacity-0 scale-95"
+                    enterTo="opacity-100 scale-100"
+                    leave="ease-in duration-200"
+                    leaveFrom="opacity-100 scale-100"
+                    leaveTo="opacity-0 scale-95"
+                  >
+                    <Dialog.Panel className="w-full max-w-3xl transform overflow-hidden rounded-xl bg-neutral-800 border border-neutral-900 p-6 text-left align-middle shadow-xl transition-all">
+                    <div className='flex gap-3'>
+                      <div className="mx-auto flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-full bg-neutral-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <Info strokeWidth={2.5} className='text-neutral-700' />
+                      </div>
+                      <div className='w-full'>
+                        <Dialog.Title
+                          as="h3"
+                          className="text-lg font-semibold leading-6 text-neutral-100 tracking-tight"
+                        >
+                          Resources and Information About Kernels
+                        </Dialog.Title>
+                        <div className="mt-1 w-full">
+                          <p className="text-md mb-2 font-base tracking-tight text-neutral-300">
+                            Here are some resources to learn more about kernels and convolutional filters.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                    <ul className='mt-3'>
+                      {resources.map((resource, i) => {
+                        return(
+                          <a key={i} className='text-neutral-100 hover:text-white transition tracking-tight' href={resource.link}>
+                            <li key={i} className='mt-1 bg-neutral-900 p-3 rounded-md border-neutral-950 border tracking-tight'>
+                              {resource.name}
+                            </li>
+                          </a>
+                        )
+                      }
+                      )}
+                    </ul>
+                    
+
+                    </Dialog.Panel>
+                  </Transition.Child>
+                </div>
+              </div>
+            </Dialog>
+          </Transition>
+        
         <div className="flex gap-2 flex-wrap">
           <Menu as="div" className="relative inline-block text-right w-full md:w-auto">
             <div>
@@ -304,29 +371,29 @@ function App() {
                     leaveTo="opacity-0 scale-95"
                   >
                     <Dialog.Panel className="w-full max-w-5xl transform overflow-hidden rounded-xl bg-neutral-800 border border-neutral-900 p-6 text-left align-middle shadow-xl transition-all">
-                    <div className='flex gap-3'>
-                      <div className="mx-auto flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-full bg-neutral-100 sm:mx-0 sm:h-10 sm:w-10">
+                    <div className='flex flex-col sm:flex-row gap-3'>
+                      <div className="flex h-13 w-13 flex-shrink-0 items-center justify-center rounded-full bg-neutral-100 sm:mx-0 h-10 w-10">
                         <Settings className="h-6 w-6 text-neutral-700" aria-hidden="true" />
                       </div>
                       <div>
                         <Dialog.Title
                           as="h3"
-                          className="text-lg font-semibold leading-6 text-neutral-100"
+                          className="text-lg font-semibold leading-6 tracking-tight text-neutral-100"
                         >
                           Custom Kernel Settings
                         </Dialog.Title>
                         <div className="mt-1">
-                          <p className="text-md font-base tracking-tight text-neutral-300">
+                          <p className="text-md tracking-tight text-neutral-300">
                             You can upload your own image here, and customize some other settings.
                           </p>
                         </div>
                       </div>
                     </div>
                     
-                    <div className="flex gap-4">
+                    <div className="flex flex-col md:flex-row gap-4">
                       <div className='flex flex-col'>
-                        <div className="mt-4 mb-4 max-w-24 aspect-square">
-                          <label className="block text-sm font-medium text-neutral-100">
+                        <div className="mt-4 mb-4 md:max-w-24 h-28 md:h-fit md:aspect-square">
+                          <label className="block text-sm font-medium text-neutral-100 tracking-tight">
                             Fraction
                           </label>
                           <input
@@ -338,14 +405,14 @@ function App() {
                             onChange={(e) => updateFraction(0, e.target.value)}
                             min={1}
                             placeholder='1'
-                            className="mt-1 text-center font-semibold text-3xl focus:ring-neutral-500 focus:border-neutral-500 block w-full shadow-sm border-2 rounded-md aspect-square bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition border-neutral-300 border-dashed"
+                            className="mt-1 text-center font-semibold text-3xl focus:ring-neutral-500 focus:border-neutral-500 block w-full h-full shadow-sm border-2 rounded-md md:aspect-square bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition border-neutral-300 border-dashed"
                           />
                         </div>
 
                         
                         <div className='w-full h-1 mt-2 bg-neutral-700 '/>
 
-                        <div className="mt-2 max-w-24 aspect-square">
+                        <div className="mt-2 md:max-w-24 h-28 md:h-fit md:aspect-square">
                           <input
                             type="number"
                             name="fraction2"
@@ -355,15 +422,15 @@ function App() {
                             value={fraction[1]}
                             onChange={(e) => {updateFraction(1, e.target.value)}}
                             min={1}
-                            className="mt-1 text-center font-semibold text-3xl focus:ring-neutral-500 focus:border-neutral-500 block w-full shadow-sm border-2 rounded-md aspect-square bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition border-neutral-300 border-dashed"
+                            className="mt-1 text-center font-semibold text-3xl focus:ring-neutral-500 focus:border-neutral-500 block w-full h-full shadow-sm border-2 rounded-md md:aspect-square bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition border-neutral-300 border-dashed"
                           />
                         </div>
                       </div>
                       <div className="flex flex-col justify-center w-full mt-4 relative">
-                        <label className="block text-sm mb-1 font-medium text-neutral-100">
+                        <label className="block text-sm mb-1 font-medium text-neutral-100 tracking-tight">
                             Custom Image
                           </label>
-                        <label className={`flex relative flex-col items-center justify-center w-full h-[198px] border-2 border-dashed rounded-lg cursor-pointer bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition ${isUploaded ? 'bg-green-50 dark:hover:bg-green-900 dark:bg-green-800 hover:bg-green-100 dark:border-green-600 hover:dark:border-green-700 border-green-500 hover:border-green-600' : 'bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100'}`}>
+                        <label className={`flex relative flex-col items-center justify-center w-full h-[202px] border-2 border-dashed rounded-lg cursor-pointer bg-neutral-50 dark:bg-neutral-700 hover:bg-neutral-100 dark:border-neutral-600 dark:hover:border-neutral-500 dark:hover:bg-neutral-600 transition ${isUploaded ? 'bg-green-50 dark:hover:bg-green-900 dark:bg-green-800 hover:bg-green-100 dark:border-green-600 hover:dark:border-green-700 border-green-500 hover:border-green-600' : 'bg-neutral-50 dark:hover:bg-bray-800 dark:bg-neutral-700 hover:bg-neutral-100'}`}>
                               <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                   { isUploaded ? <CheckCircle className='w-8 h-8 mb-4 text-green-500 dark:text-green-400' /> : <svg   className="w-8 h-8 mb-4 text-neutral-500 dark:text-neutral-400"   aria-hidden="true"   xmlns="http://www.w3.org/2000/svg"   fill="none"   viewBox="0 0 20 16" >   {" "}   <path     stroke="currentColor"     strokeLinecap="round"     strokeLinejoin="round"     strokeWidth={2}     d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"   />{" "} </svg>}
                                   { isUploaded ? <p className="mb-2 text-sm text-green-500 dark:text-green-400"><span className="font-semibold">Uploaded</span> successfully</p> : <p className="mb-2 text-sm text-neutral-500 dark:text-neutral-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>}
@@ -376,7 +443,7 @@ function App() {
                       <div className="mt-4">
                         <button
                           type="button"
-                          className="inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-4 py-2 text-sm font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-offset-2"
+                          className="inline-flex justify-center rounded-md border border-transparent bg-neutral-100 px-4 py-2 text-sm w-full font-medium text-neutral-900 hover:bg-neutral-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-neutral-500 focus-visible:ring-offset-2"
                           onClick={closeModal}
                         >
                           Done
@@ -412,22 +479,8 @@ function App() {
 
         <div className="mt-24">
           <h2>Built for CSE 455 by <a className=' text-neutral-100 hover:text-white transition' href='https://www.linkedin.com/in/derek-zhu-873477215/'>Derek Zhu</a> and <a className='text-neutral-100 hover:text-white transition' href='https://www.ruslan.in'>Ruslan Mukhamedvaleev.</a></h2>
-          <h3 className='mt-2'>Resource List <ArrowDown className='inline-block mb-0.5' size={16}/> </h3>
         </div>
 
-        <div className="mt-24">
-          <h3 className=' italic'>Resources:</h3>
-          <ul>
-            {resources.map((resource, i) => {
-              return(
-                <li key={i} className='mt-1'>
-                  <a className='text-neutral-100 hover:text-white transition' href={resource.link}>{resource.name}</a>
-                </li>
-              )
-            }
-            )}
-          </ul>
-        </div>
       </div>
       <div className='justify-center items-center max-h-[980px] h-full w-fit m-auto '>
         

@@ -21,6 +21,9 @@ function App() {
   const SOBEL_H = matrix([[-1, -2, -1], [0, 0, 0], [1, 2, 1]])
   const SOBEL_V = matrix([[-1, 0, 1], [-2, 0, 2], [-1, 0, 1]])
 
+  const BOX_BLUR = matrix([[1, 1, 1], [1, 1, 1], [1, 1, 1]])
+  const GAUSSIAN_BLUR = matrix([[1, 2, 1], [2, 4, 2], [1, 2, 1]])
+
   const canvasRef = useRef(null);
   const [cFilter, setCFilter] = useState(null);
   const [stringFilter, setStringFilter] = useState('Sharpen');
@@ -43,11 +46,15 @@ function App() {
     setIsOpen(true)
   }
 
-  const preCooked = [{name: "Identity", kernel: IDENTITY}, 
-                     {name:"Ridge", kernel: RIDGE}, 
-                     {name: "Sharpen", kernel:SHARPEN}, 
-                     {name:"Horizontal Edge", kernel:SOBEL_H},
-                     {name:"Vertical Edge", kernel:SOBEL_V}]
+  const preCooked = [
+                    {name:"Identity", kernel: IDENTITY, fraction: [1, 1]}, 
+                    {name:"Ridge", kernel: RIDGE, fraction: [1, 1]}, 
+                    {name:"Sharpen", kernel:SHARPEN, fraction: [1, 1]}, 
+                    {name:"Horizontal Edge", kernel:SOBEL_H, fraction: [1, 1]},
+                    {name:"Vertical Edge", kernel:SOBEL_V, fraction: [1, 1]},
+                    {name:"Box Blur", kernel:BOX_BLUR, fraction: [1, 9]},
+                    {name:"Gaussian Blur", kernel:GAUSSIAN_BLUR, fraction: [1, 16]}
+                  ]
 
   const images = [{name: "Vampire Deer", img_: vd}, 
                   {name: "Lenna", img_:lenna}, 
@@ -309,7 +316,8 @@ function App() {
                                 onClick={() => {
                                   setCFilter(kernel_info.kernel), 
                                   setStringFilter(kernel_info.name), 
-                                  presetGrid(kernel_info.kernel)}}
+                                  presetGrid(kernel_info.kernel),
+                                  setFraction(kernel_info.fraction)}}
                         >{kernel_info.name}</button>
                       </Menu.Item>
                     )
@@ -484,7 +492,7 @@ function App() {
       </div>
       <div className='justify-center items-center max-h-[980px] h-full w-fit m-auto '>
         
-        <canvas className='m-auto w-[80vw] pb-24 md:w-fit' ref={canvasRef}/>
+        <canvas className='m-auto w-[80vw] pt-28 md:w-fit' ref={canvasRef}/>
       </div>
       
     </main>

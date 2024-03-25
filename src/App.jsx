@@ -224,8 +224,12 @@ function App() {
   }
 
   const applyFraction = (matrix, fraction) => {
-    const newMatrix = matrix.map(row => row.map(cell => cell * fraction[0] / fraction[1]))
+    const newMatrix = matrix.map(row => row.map(cell => cell * (fraction[0] / fraction[1])))
       return newMatrix;
+    }
+
+    const applySpecFraction = (matrix, fraction) => {
+      return matrix.map((value) => value * fraction[0] / fraction[1]);
     }
 
   
@@ -302,19 +306,19 @@ function App() {
         <div className="flex gap-2 flex-wrap">
           <Menu as="div" className="relative inline-block text-right w-full md:w-auto">
             <div>
-              <Menu.Button className="inline-flex justify-center tracking-[-0.01em] w-full rounded-md border bg-neutral-900 ">
+              <Menu.Button className="inline-flex justify-center tracking-[-0.01em] w-full rounded-md border dark:bg-neutral-900 bg-neutral-100 ">
                 Kernel: {stringFilter} <ChevronDown className='ml-2 mt-0.5' size={20} />
               </Menu.Button>
               
             </div>
-            <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 bg-neutral-900 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
+            <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 dark:bg-neutral-900 bg-neutral-100 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
               <div className="px-1 py-1 ">
                 {preCooked.map((kernel_info, i) => {
                     return(
                       <Menu.Item key={i}>
-                        <button className='w-full text-left tracking-[-0.01em]' 
+                        <button className='w-full text-left tracking-[-0.01em] dark:bg-neutral-900 bg-neutral-100' 
                                 onClick={() => {
-                                  setCFilter(kernel_info.kernel), 
+                                  setCFilter(matrix(applySpecFraction(kernel_info.kernel, kernel_info.fraction))),
                                   setStringFilter(kernel_info.name), 
                                   presetGrid(kernel_info.kernel),
                                   setFraction(kernel_info.fraction)}}
@@ -329,17 +333,17 @@ function App() {
 
           <Menu as="div" className="relative inline-block text-right  w-full md:w-auto">
             <div>
-              <Menu.Button className="inline-flex justify-center w-full rounded-md border bg-neutral-900 tracking-[-0.01em]">
+              <Menu.Button className="inline-flex justify-center w-full rounded-md border dark:bg-neutral-900 bg-neutral-100 tracking-[-0.01em]">
                 Image: {stringImage} <ChevronDown className='ml-2 mt-0.5' size={20} />
               </Menu.Button>
               
             </div>
-            <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 bg-neutral-900 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
+            <Menu.Items className="absolute left-0 right-0 z-10 mt-2 w-56 dark:bg-neutral-900 bg-neutral-100 divide-y divide-neutral-500 rounded-md shadow-lgring-opacity-5">
               <div className="px-1 py-1 ">
                 {images.map((img_, i) => {
                   return(
                     <Menu.Item key={i}>
-                      <button className='w-full text-left tracking-[-0.01em]' onClick={() => {changeImage(img_.img_), setStringImage(img_.name)}}>{img_.name}</button>
+                      <button className='w-full text-left tracking-[-0.01em] dark:bg-neutral-900 bg-neutral-100' onClick={() => {changeImage(img_.img_), setStringImage(img_.name)}}>{img_.name}</button>
                     </Menu.Item>
                   )
                 })}
@@ -347,12 +351,12 @@ function App() {
               </div>
             </Menu.Items>
           </Menu>
-          <button onClick={modImage} className=' bg-neutral-900 rounded-md tracking-[-0.01em]  w-full md:w-auto'>Apply Kernel</button>
-          <button onClick={() => {drawImage(img)}} className=' w-full md:w-auto'>Reset Image</button>
+          <button onClick={modImage} className=' dark:bg-neutral-900 bg-neutral-100 rounded-md tracking-[-0.01em]  w-full md:w-auto'>Apply Kernel</button>
+          <button onClick={() => {drawImage(img)}} className='dark:bg-neutral-900 bg-neutral-100 w-full md:w-auto'>Reset Image</button>
           
         </div>
         <div className='flex flex-col'>
-          <h2 className='font-semibold font-sans text-3xl mt-12 tracking-tight'>Kernel Matrix <span className='inline-block'><button type="button" onClick={openModal} className=' bg-transparent ml-0.5 -mb-1 p-0'><Settings className='mt-1' /></button></span>{ fraction[0] === fraction[1] ? <span></span> : <span className='text-lg ml-2 font-semibold text-neutral-300'>Fraction: {fraction[0]} / {fraction[1]}</span>}</h2>
+          <h2 className='font-semibold font-sans text-3xl mt-12 tracking-tight'>Kernel Matrix <span className='inline-block'><button type="button" onClick={openModal} className=' bg-transparent ml-0.5 -mb-1 p-0'><Settings className='mt-1' /></button></span>{ fraction[0] === fraction[1] ? <span></span> : <span className='text-lg ml-2 font-semibold dark:text-neutral-300'>Fraction: {fraction[0]} / {fraction[1]}</span>}</h2>
           <Transition appear show={isOpen} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={closeModal}>
               <Transition.Child
@@ -466,7 +470,7 @@ function App() {
           
           
           
-          <p className='font-sans text-lg text-neutral-400'>Enter a 3x3 matrix to apply a custom kernel to the image.</p>
+          <p className='font-sans text-lg darK:text-neutral-400'>Enter a 3x3 matrix to apply a custom kernel to the image.</p>
 
           <div className='grid grid-cols-3 grid-rows-3 w-full lg:w-[460px] gap-2 mt-3'>
             {grid.map((row, rowIndex) => (
@@ -478,7 +482,7 @@ function App() {
                   onFocus={handleInputFocus} 
                   onClick={() => {setStringFilter('Custom'), setCFilter(matrix(applyFraction(grid, fraction)))}}
                   onChange={(e) => handleInputChange(rowIndex, colIndex, e.target.value)}
-                  className='aspect-square h-full w-full text-center font-bold text-5xl rounded-2xl bg-neutral-900'
+                  className='aspect-square h-full w-full text-center font-bold text-5xl rounded-2xl dark:bg-neutral-900 bg-neutral-200'
                 />
               ))
             ))}
@@ -486,13 +490,13 @@ function App() {
         </div>
 
         <div className="mt-24">
-          <h2>Built for CSE 455 by <a className=' text-neutral-100 hover:text-white transition' href='https://www.linkedin.com/in/derek-zhu-873477215/'>Derek Zhu</a> and <a className='text-neutral-100 hover:text-white transition' href='https://www.ruslan.in'>Ruslan Mukhamedvaleev.</a></h2>
+          <h2>Built for CSE 455 by <a className='text-black hover:text-neutral-700 dark:text-neutral-100 dark:hover:text-white transition' href='https://www.linkedin.com/in/derek-zhu-873477215/'>Derek Zhu</a> and <a className='text-black hover:text-neutral-700 dark:text-neutral-100 dark:hover:text-white transition' href='https://www.ruslan.in'>Ruslan Mukhamedvaleev.</a></h2>
         </div>
 
       </div>
       <div className='justify-center items-center max-h-[980px] h-full w-fit m-auto '>
         
-        <canvas className='m-auto w-[80vw] pt-28 md:w-fit' ref={canvasRef}/>
+        <canvas className='m-auto w-[80vw] pt-28 pb-24 ml:pb-0 md:w-fit' ref={canvasRef}/>
       </div>
       
     </main>

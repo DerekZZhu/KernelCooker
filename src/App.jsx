@@ -3,7 +3,6 @@ import { matrix, zeros } from 'mathjs'
 import { Menu, Dialog, Transition } from '@headlessui/react'
 
 import vd from './assets/Vd-Orig.png'
-import lenna from './assets/Lenna.png'
 import tm from './assets/ThisMan.jpg'
 import gates from './assets/gates.png'
 import baboon from './assets/baboon.jpg'
@@ -56,8 +55,7 @@ function App() {
                     {name:"Gaussian Blur", kernel:GAUSSIAN_BLUR, fraction: [1, 16]}
                   ]
 
-  const images = [{name: "Vampire Deer", img_: vd}, 
-                  {name: "Lenna", img_:lenna}, 
+  const images = [{name: "Vampire Deer", img_: vd},  
                   {name:"This Man", img_:tm}, 
                   {name:"Gates Building", img_:gates},
                   {name:"Baboon", img_:baboon}]

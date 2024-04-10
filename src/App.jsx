@@ -354,7 +354,7 @@ function App() {
           
         </div>
         <div className='flex flex-col'>
-          <h2 className='font-semibold font-sans text-3xl mt-12 tracking-tight'>Kernel Matrix <span className='inline-block'><button type="button" onClick={openModal} className=' bg-transparent ml-0.5 -mb-1 p-0'><Settings className='mt-1' /></button></span>{ fraction[0] === fraction[1] ? <span></span> : <span className='text-lg ml-2 font-semibold dark:text-neutral-300'>Fraction: {fraction[0]} / {fraction[1]}</span>}</h2>
+          <h2 className='font-semibold font-sans text-3xl mt-12 tracking-tight'>Kernel Matrix <span className='inline-block'><button type="button" onClick={openModal} className=' bg-transparent ml-0.5 p-0'><Settings className='mt-1' /></button></span>{ fraction[0] === fraction[1] ? <span></span> : <span className='text-lg ml-2 font-semibold dark:text-neutral-300'>Fraction: {fraction[0]} / {fraction[1]}</span>}</h2>
           <Transition appear show={isOpen} as={Fragment}>
           <Dialog as="div" className="relative z-10" onClose={closeModal}>
               <Transition.Child
@@ -420,9 +420,9 @@ function App() {
                         </div>
 
                         
-                        <div className='w-full h-1 mt-2 bg-neutral-700 '/>
+                        <div className='w-full h-1 mt-3.5 bg-neutral-700 '/>
 
-                        <div className="mt-2 md:max-w-24 h-28 md:h-fit md:aspect-square">
+                        <div className="mt-0.5 md:max-w-24 h-28 md:h-fit md:aspect-square">
                           <input
                             type="number"
                             name="fraction2"
